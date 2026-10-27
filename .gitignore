@@ -1,0 +1,21 @@
+# .gitignore
+
+# 忽略 Python 快取與編譯檔案
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 忽略 Streamlit 隱藏設定 (包含可能含有密碼的 secrets.toml)
+.streamlit/
+
+# 忽略環境變數檔案
+.env
+
+# 忽略虛擬環境
+venv/
+env/
+.venv/
+
+# 忽略 OS 系統檔案
+.DS_Store
+Thumbs.db
