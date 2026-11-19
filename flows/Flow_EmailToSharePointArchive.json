@@ -1,0 +1,53 @@
+{
+  "flowMetadata": {
+    "name": "EnterpriseDemo-SED-AutoArchive-PDF",
+    "version": "1.0.0",
+    "architecture": "M365 Standard Connectors (Zero-Premium-License)",
+    "description": "Automated downstream workflow triggered when Streamlit SMTP delivers an onboarding safety PDF report to the SED mailbox."
+  },
+  "trigger": {
+    "type": "Office365Outlook.OnNewEmailV3",
+    "parameters": {
+      "folderPath": "Inbox",
+      "subjectFilter": "【入職培訓結果】",
+      "includeAttachments": true,
+      "onlyWithAttachments": true
+    }
+  },
+  "actions": [
+    {
+      "step": 1,
+      "name": "Filter_PDF_Attachments",
+      "type": "Query",
+      "description": "Filter incoming email attachments to process strictly .pdf controlled records.",
+      "condition": "@endsWith(toLower(item()?['name']), '.pdf')"
+    },
+    {
+      "step": 2,
+      "name": "Archive_PDF_To_SharePoint_Library",
+      "type": "SharePoint.CreateFile",
+      "parameters": {
+        "siteAddress": "https://demo-tenant.sharepoint.com/sites/SED-Compliance",
+        "folderPath": "/Shared Documents/Onboarding_Safety_Records/2026",
+        "fileName": "@items('Apply_to_each')?['name']",
+        "fileContent": "@items('Apply_to_each')?['contentBytes']"
+      },
+      "governanceNote": "Enforces RBAC permissions restricted strictly to Safety & Environmental Department (SED) auditors."
+    },
+    {
+      "step": 3,
+      "name": "Log_Audit_Metadata_To_List",
+      "type": "SharePoint.CreateItem",
+      "parameters": {
+        "siteAddress": "https://demo-tenant.sharepoint.com/sites/SED-Compliance",
+        "listName": "SED_Onboarding_Safety_Records",
+        "item": {
+          "Title": "DEMO-SED-REC-001",
+          "EmailSubject": "@triggerOutputs()?['body/subject']",
+          "ReceivedTimestampUTC": "@triggerOutputs()?['body/receivedDateTime']",
+          "ArchiveStatus": "Archived - Immutable PDF"
+        }
+      }
+    }
+  ]
+}
