@@ -42,20 +42,8 @@
   <meta name="theme-color" content="#0b192c">
   <meta name="application-name" content="EnterpriseDemo-Safety-Quiz">
 
-  <!-- 🛡️ 企業級資安防禦策略：Content Security Policy (CSP) 與權限控制 -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' 'unsafe-inline';
-    style-src 'self' 'unsafe-inline';
-    img-src 'self' data: https://img.shields.io;
-    font-src 'self' data:;
-    connect-src 'self';
-    media-src 'none';
-    object-src 'none';
-    base-uri 'self';
-    form-action 'none';
-    frame-ancestors 'none';
-  ">
+  <!-- 🛡️ 企業級資安防禦策略：單行化 Content Security Policy (CSP) 與權限控制 -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://img.shields.io; font-src 'self' data:; connect-src 'self'; media-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
   <meta http-equiv="Permissions-Policy" content="accelerometer=(), gyroscope=(), microphone=(), camera=(), geolocation=(), payment=()">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
@@ -645,7 +633,7 @@
     </header>
 
     <main>
-      <!-- 專案摘要與架構定位 -->
+      <!-- 專案摘要與合規定位 -->
       <section class="card">
         <h2>
           <span class="tc">📌 專案摘要與合規定位</span>
@@ -973,13 +961,14 @@
         return document.body.classList.contains("lang-en");
       }
 
+      // Unicode-escaped replacements prevent copy-paste HTML entity decoding issues
       function escapeHtml(str) {
         return String(str)
-          .replace(/&/g, "&")
-          .replace(/</g, "<")
-          .replace(/>/g, ">")
-          .replace(/"/g, """)
-          .replace(/'/g, "'");
+          .replace(/\u0026/g, "\u0026amp;")
+          .replace(/\u003c/g, "\u0026lt;")
+          .replace(/\u003e/g, "\u0026gt;")
+          .replace(/\u0022/g, "\u0026quot;")
+          .replace(/\u0027/g, "\u0026#39;");
       }
 
       function sanitizeInput(val) {
@@ -988,7 +977,7 @@
       }
 
       function sanitizeFilename(val) {
-        return String(val || "").replace(/[\\/*?:"<>|]/g, "").trim() || "Worker";
+        return String(val || "").replace(/[\\/*?:\u0022\u003c\u003e|]/g, "").trim() || "Worker";
       }
 
       function getHKTTimestamp() {
