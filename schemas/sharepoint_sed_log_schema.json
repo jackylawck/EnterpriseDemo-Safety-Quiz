@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "listName": "SED_Onboarding_Safety_Records",
+  "description": "Target SharePoint Online List schema for automated compliance logging and ISO 45001 Clause 7.2 audit tracking.",
+  "complianceStandards": ["ISO 45001:2018", "ISO 9001:2015", "ISO/IEC 27001:2022", "PDPO Cap. 486"],
+  "columns": [
+    {
+      "internalName": "Title",
+      "displayName": "Document Control ID",
+      "type": "Text",
+      "required": true,
+      "defaultValue": "DEMO-SED-REC-001"
+    },
+    {
+      "internalName": "WorkerName",
+      "displayName": "員工姓名 / Full Name",
+      "type": "Text",
+      "maxLength": 50,
+      "required": true
+    },
+    {
+      "internalName": "WorkerRegNo",
+      "displayName": "工人註冊證 / Worker Registration No.",
+      "type": "Text",
+      "maxLength": 25,
+      "required": true,
+      "indexed": true
+    },
+    {
+      "internalName": "Department",
+      "displayName": "所屬組別 / Department",
+      "type": "Choice",
+      "required": true
+    },
+    {
+      "internalName": "AssessmentScore",
+      "displayName": "考核得分 / Score",
+      "type": "Number",
+      "min": 0,
+      "max": 5,
+      "required": true
+    },
+    {
+      "internalName": "PassStatus",
+      "displayName": "合格狀態 / Status",
+      "type": "Choice",
+      "choices": ["PASS", "FAIL"],
+      "required": true
+    },
+    {
+      "internalName": "SubmissionTimestampHKT",
+      "displayName": "考核時間 (UTC+8) / Timestamp",
+      "type": "DateTime",
+      "required": true
+    }
+  ]
+}
